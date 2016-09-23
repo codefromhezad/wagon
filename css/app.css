@@ -11,10 +11,14 @@ html, body {
 .wagon-container {
 	position: relative;
 	width: 1000px;
-	height: 100%;
+	height: 800px;
 	margin: auto;
 	overflow: hidden;
 }
+
+
+
+/* Background Landscape */
 
 .wagon-container .landscape-wrapper {
 	position: absolute;
@@ -76,6 +80,60 @@ html, body {
     animation: translateLayer3 80s linear infinite;
 }
 
+
+
+/* Background trees */
+
+@keyframes translateTreesLayer {
+	0% { transform: translateX(0%); }
+	100% { transform: translateX(-8000px); }
+}
+
+.wagon-container .trees-wrapper {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 9000px; /* 8000px + 1000px */
+	height: 100%;
+	z-index: 2;
+	animation: translateTreesLayer 16s linear infinite;
+}
+
+.wagon-container .trees-wrapper div {
+	position: absolute;
+	background: transparent no-repeat center / 70%;
+}
+
+.wagon-container .trees-wrapper div.tree-1 {
+	width: 323px;
+	height: 560px;
+	bottom: 1px;
+	background-image: url('../img/arbre/tree-1.png') ;
+}
+
+.wagon-container .trees-wrapper div.tree-2 {
+	width: 389px;
+	height: 505px;
+	bottom: 50px;
+	background-image: url('../img/arbre/tree-2.png');
+}
+
+.wagon-container .trees-wrapper div.tree-3 {
+	width: 254px;
+	height: 536px;
+	bottom: 40px;
+	background-image: url('../img/arbre/tree-3.png');
+}
+
+.wagon-container .trees-wrapper div.tree-4 {
+	width: 373px;
+	height: 630px;
+	bottom: 10px;
+	background-image: url('../img/arbre/tree-4.png');
+}
+
+
+/* Wagon interior */
 
 .wagon-container .interior {
 	position: absolute;
