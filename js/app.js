@@ -3,8 +3,46 @@
 var Scene = {
 	timerProgress: 0,
 	repeatable_actions_timers: {},
+	preloader: null,
+	__readyCallback: function() {},
 
-	
+	toPreload: [
+		/* Images */
+		{id: "bg_layer_1", src: "img/bg/layer-1.png"},
+		{id: "bg_layer_2", src: "img/bg/layer-2.png"},
+		{id: "bg_layer_3", src: "img/bg/layer-3.png"},
+		{id: "bg_layer_4", src: "img/bg/layer-4.png"},
+		{id: "interior", src: "img/interior.png"},
+		{id: "tree_1", src: "img/arbre/tree-1.png"},
+		{id: "tree_2", src: "img/arbre/tree-2.png"},
+		{id: "tree_3", src: "img/arbre/tree-3.png"},
+		{id: "tree_4", src: "img/arbre/tree-4.png"},
+		
+		/* Sounds */
+		{ id: "train_amb", src: "snd/train_amb.mp3" }
+	],
+
+	ready: function(callback) {
+
+		Scene.__readyCallback = callback;
+
+		Scene.preloader = new createjs.LoadQueue(true);
+	    Scene.preloader.installPlugin(createjs.Sound);          
+	    //Scene.preloader.on("fileload", handleFileLoad);
+	    Scene.preloader.on("progress", Scene.onPreloadProgress);
+	    Scene.preloader.on("complete", Scene.onPreloadComplete);
+	    //Scene.preloader.on("error", loadError);
+	    Scene.preloader.loadManifest(Scene.toPreload);
+	},
+
+	onPreloadProgress: function(e) {
+		$('.loading-status').html("Loading ... (" + (Scene.preloader.progress*100|0) + " %)");
+	},
+
+	onPreloadComplete: function(e) {
+		console.log("ready")
+		Scene.__readyCallback();
+	},
 
 	loop: function(callback) {
 		var start = null;
@@ -44,26 +82,6 @@ jQuery( function($) {
 	var $trees_wrapper = $('.wagon-container .trees-wrapper');
 	var $interior_shake_helper = $('.interior-shake-helper');
 	var $interior = $('.interior');
-
-
-	/* Load sounds & init Sound engine  */
-	var Sound = {
-		assets: [
-			{ id: "train_amb", src: "train_amb.mp3" },
-		],
-
-		init: function() {
-			createjs.Sound.addEventListener("fileload", Sound.onAssetsLoaded);
-    		createjs.Sound.registerSounds(Sound.assets, "snd/");
-		},
-
-		onAssetsLoaded: function(e) {
-			var amb = createjs.Sound.play("train_amb");
-			amb.volume = 0.5;
-		},
-	}
-
-	Sound.init();
 
 
 	/* Placing trees procedurally */
@@ -110,17 +128,28 @@ jQuery( function($) {
 
 
 
-	/* Main animation loop / Handling special events */
-	Scene.loop(function() {
-		
+	/* Scene ready / Launch animation */
+	Scene.ready(function() {
 
-		/* Shake vigorously the wagon once in a while */
-		Scene.repeatable_action('shake_wagon', 3000, function() {
-			if( (! $interior_shake_helper.hasClass('shake')) && Math.random() < 0.3 ) {
-				$interior_shake_helper.addClass('shake');
-			}
+		/* Scene loaded, hide loading indicator and start ambiant sound */
+		$('.loading-status').addClass('done');
+		$('.wagon-container').addClass('loaded');
+
+		var amb = createjs.Sound.play("train_amb");
+		amb.volume = 0.5;
+
+
+		/* Main animation loop / Handling special events */
+		Scene.loop(function() {
+			
+			/* Shake vigorously the wagon once in a while */
+			Scene.repeatable_action('shake_wagon', 3000, function() {
+				if( (! $interior_shake_helper.hasClass('shake')) && Math.random() < 0.3 ) {
+					$interior_shake_helper.addClass('shake');
+				}
+			});
+			
 		});
-		
 	});
 	
 });

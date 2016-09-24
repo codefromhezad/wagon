@@ -8,6 +8,23 @@ html, body {
 	font-family: Helvetica, Arial, Verdana, Sans;
 }
 
+.loading-status {
+	text-align: center;
+	line-height: 42px;
+	text-transform: uppercase;
+	transition: opacity 0.5s;
+	opacity: 1;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: 0;
+	width: 100%;
+}
+
+.loading-status.done {
+	opacity: 0;
+}
+
 .wagon-container {
 	position: relative;
 	width: 1000px;
@@ -16,6 +33,14 @@ html, body {
 	overflow: hidden;
 }
 
+.wagon-container > * {
+	opacity: 0;
+	transition: opacity 0.5s;
+}
+
+.wagon-container.loaded > * {
+	opacity: 1;
+}
 
 
 /* Background Landscape */
