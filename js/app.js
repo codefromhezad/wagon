@@ -4,6 +4,8 @@ var Scene = {
 	timerProgress: 0,
 	repeatable_actions_timers: {},
 
+	
+
 	loop: function(callback) {
 		var start = null;
 
@@ -42,6 +44,26 @@ jQuery( function($) {
 	var $trees_wrapper = $('.wagon-container .trees-wrapper');
 	var $interior_shake_helper = $('.interior-shake-helper');
 	var $interior = $('.interior');
+
+
+	/* Load sounds & init Sound engine  */
+	var Sound = {
+		assets: [
+			{ id: "train_amb", src: "train_amb.mp3" },
+		],
+
+		init: function() {
+			createjs.Sound.addEventListener("fileload", Sound.onAssetsLoaded);
+    		createjs.Sound.registerSounds(Sound.assets, "snd/");
+		},
+
+		onAssetsLoaded: function(e) {
+			var amb = createjs.Sound.play("train_amb");
+			amb.volume = 0.5;
+		},
+	}
+
+	Sound.init();
 
 
 	/* Placing trees procedurally */
