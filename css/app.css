@@ -46,7 +46,7 @@ html, body {
 	100% { transform: translateX(-3253px); }
 }
 
-.wagon-container .landscape-wrapper .bg div.layer-1 {
+.wagon-container .landscape-wrapper .bg div.layer-1 { /* Ciel */
 	z-index: 1;
 	width: 4253px; /* 3253px + 1000px */
 	top: 52px;
@@ -59,12 +59,12 @@ html, body {
 	100% { transform: translateX(-3096px); }
 }
 
-.wagon-container .landscape-wrapper .bg div.layer-2 {
+.wagon-container .landscape-wrapper .bg div.layer-2 { /* Montagnes */
 	z-index: 2;
 	width: 4096px; /* 3096px + 1000px */
 	bottom: 5px;
     background: url('../img/bg/layer-2.png') repeat-x bottom left;
-    animation: translateLayer2 100s linear infinite;
+    animation: translateLayer2 90s linear infinite;
 }
 
 @keyframes translateLayer3 {
@@ -72,12 +72,12 @@ html, body {
 	100% { transform: translateX(-3476px); }
 }
 
-.wagon-container .landscape-wrapper .bg div.layer-3 {
+.wagon-container .landscape-wrapper .bg div.layer-3 { /* Truc bleu */
 	z-index: 3;
 	width: 4476px; /* 3476px + 1000px */
 	bottom: -22px;
     background: url('../img/bg/layer-3.png') repeat-x bottom left;
-    animation: translateLayer3 80s linear infinite;
+    animation: translateLayer3 70s linear infinite;
 }
 
 
@@ -135,12 +135,53 @@ html, body {
 
 /* Wagon interior */
 
-.wagon-container .interior {
+@keyframes wagonMovement {
+  0%, 90% {
+    transform: translateY(-1px);
+  }
+  
+  20%, 80% {
+    transform: translateY(2px);
+  }
+
+  30%, 50%, 70% {
+    transform: translateY(-4px);
+  }
+
+  40%, 60% {
+    transform: translateY(4px);
+  }
+}
+
+@keyframes wagonShake {
+  10%, 90% {
+    transform: translateY(-2px);
+  }
+
+  40%, 60% {
+    transform: translateY(2px);
+  }
+}
+
+.wagon-container .interior-shake-helper {
 	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: url('../img/interior.png') no-repeat center / cover;
 	z-index: 2;
+}
+
+.wagon-container .interior-shake-helper.shake {
+	animation: wagonShake 0.7s cubic-bezier(.36,.07,.19,.97);
+}
+
+.wagon-container .interior {
+	position: absolute;
+	top: -1%;
+    left: -1%;
+    width: 102%;
+    height: 102%;
+	background: url('../img/interior.png') no-repeat center / cover;
+	animation: wagonMovement 10s cubic-bezier(.36,.07,.19,.97) infinite;
 }

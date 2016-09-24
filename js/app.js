@@ -1,31 +1,47 @@
 
-/* Timed animation loop maker */
-function loop(callback, max_progress) {
-	var start = null;
+/* Timed animation helpers / scene wrapper */
+var Scene = {
+	timerProgress: 0,
+	repeatable_actions_timers: {},
 
-	function step(timestamp) {
-		if (!start) start = timestamp;
-	 	var progress = timestamp - start;
-	 	
-	 	callback(progress);
-		
-		if( max_progress && progress >= max_progress ) {
-			return;
+	loop: function(callback) {
+		var start = null;
+
+		function step(timestamp) {
+			if (!start) start = timestamp;
+		 	Scene.timerProgress = timestamp - start;
+		 	
+		 	callback();
+			
+			window.requestAnimationFrame(step);
 		}
-		
-		window.requestAnimationFrame(step);
-	}
 
-	window.requestAnimationFrame(step);
+		window.requestAnimationFrame(step);
+	},
+
+	repeatable_action: function(slug, milliseconds, callback) {
+		if( Scene.repeatable_actions_timers[slug] === undefined ) {
+			Scene.repeatable_actions_timers[slug] = Scene.timerProgress;
+		}
+
+		if( Scene.timerProgress - Scene.repeatable_actions_timers[slug] > milliseconds ) {
+			Scene.repeatable_actions_timers[slug] = Scene.timerProgress;
+			callback();
+		}
+	}
 }
 
 
-jQuery( function($) {
 
+/* MAIN / Entry point */
+
+jQuery( function($) {
 
 	/* Caching common selectors */
 	var $landscape_wrapper = $('.wagon-container .landscape-wrapper');
 	var $trees_wrapper = $('.wagon-container .trees-wrapper');
+	var $interior_shake_helper = $('.interior-shake-helper');
+	var $interior = $('.interior');
 
 
 	/* Placing trees procedurally */
@@ -61,9 +77,28 @@ jQuery( function($) {
 		$trees_wrapper.append('<div class="tree-'+tree_index+'" style="left: '+left+'px;"></div>');
 	}
 
-	/* Main animation loop */
-	/*loop(function(progress) {
-		$landscape_wrapper.css('transform', 'translateX(-'+(progress * 0.1)+'px)');
-	}, 2000);*/
+	
+
+	/* Register animationend events for repeatable actions in the main loop */
+	$interior_shake_helper.on('animationend webkitAnimationEnd oAnimationEnd MSAnimationEnd', function(e) {
+		if( e.originalEvent.animationName == "wagonShake" ) {
+			$interior_shake_helper.removeClass('shake');
+		}
+	});
+
+
+
+	/* Main animation loop / Handling special events */
+	Scene.loop(function() {
+		
+
+		/* Shake vigorously the wagon once in a while */
+		Scene.repeatable_action('shake_wagon', 3000, function() {
+			if( (! $interior_shake_helper.hasClass('shake')) && Math.random() < 0.3 ) {
+				$interior_shake_helper.addClass('shake');
+			}
+		});
+		
+	});
 	
 });
